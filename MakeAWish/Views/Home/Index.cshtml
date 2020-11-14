@@ -1,0 +1,200 @@
+﻿@*@model MakesAWish.Models.ToDoViewModel*@
+@{
+    ViewBag.Title = "Index";
+}
+<title id='Description'>
+    jqxScheduler Agenda View example
+</title>
+<meta name="description" content="Javascript Scheduler with Agenda View example" />
+<link rel="stylesheet" href="../../jqwidgets/styles/jqx.base.css" type="text/css" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1 minimum-scale=1" />
+@section scripts {
+    <script type="text/javascript" src="../../scripts/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../../jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="../../jqwidgets/jqxsortable.js"></script>
+    <script type="text/javascript" src="../../jqwidgets/jqxkanban.js"></script>
+    <script type="text/javascript" src="../../jqwidgets/jqxdata.js"></script>
+    <style>
+        .jqx-kanban-item-color-status {
+            width: 100%;
+            height: 25px;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            position: relative;
+            margin-top: 0px;
+            top: 0px;
+        }
+
+        .jqx-kanban-item {
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
+
+        .jqx-kanban-item-text {
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+
+        .jqx-kanban-item-avatar {
+            top: 9px;
+        }
+
+        .jqx-kanban-template-icon {
+            position: absolute;
+            right: 3px;
+            top: 12px;
+        }
+    </style>
+    <script type="text/javascript">
+        debugger;
+        var sourceData = @Html.Raw(Json.Encode(Model.toDoModels));
+        $(document).ready(function () {
+            var fields = [
+                { name: "id", type: "string" },
+                { name: "status", map: "state", type: "string" },
+                { name: "text", map: "label", type: "string" },
+                { name: "tags", type: "string" },
+                { name: "color", map: "hex", type: "string" },
+                { name: "resourceId", type: "number" }
+            ];
+            var source =
+            {
+                localData: sourceData,
+                dataType: "json",
+                dataFields: fields
+            };
+            var dataAdapter = new $.jqx.dataAdapter(source);
+            var resourcesAdapterFunc = function () {
+                var resourcesSource =
+                {
+                    localData: [
+                        { id: 0, name: "", image: "../../jqwidgets/styles/images/common.png", common: true }
+                    ],
+                    dataType: "array",
+                    dataFields: [
+                    ]
+                };
+                var resourcesDataAdapter = new $.jqx.dataAdapter(resourcesSource);
+                return resourcesDataAdapter;
+            }
+            var getIconClassName = function () {
+                //switch (theme) {
+                //    case "darkblue":
+                //    case "black":
+                //    case "shinyblack":
+                //    case "ui-le-frog":
+                //    case "metrodark":
+                //    case "orange":
+                //    case "darkblue":
+                //    case "highcontrast":
+                //    case "ui-sunny":
+                //    case "ui-darkness":
+                //        return "jqx-icon-plus-alt-white ";
+                //}
+                return "jqx-icon-plus-alt";
+            }
+            $('#kanban').jqxKanban({
+                width: 800,//getWidth('kanban'),
+                template: "<div class='jqx-kanban-item' id=''>"
+                    + "<div class='jqx-kanban-item-color-status'></div>"
+                    + "<div style='display: none;' class='jqx-kanban-item-avatar'></div>"
+                    + "<div class='jqx-icon jqx-icon-close jqx-kanban-item-template-content jqx-kanban-template-icon'></div>"
+                    + "<div class='jqx-kanban-item-text'></div>"
+                    + "<div style='display: none;' class='jqx-kanban-item-footer'></div>"
+                    + "</div>",
+                resources: resourcesAdapterFunc(),
+                source: dataAdapter,
+                // render items.
+                itemRenderer: function (element, item, resource) {
+                    $(element).find(".jqx-kanban-item-color-status").html("<span style='line-height: 23px; margin-left: 5px;'>" + resource.name + "</span>");
+                    $(element).find(".jqx-kanban-item-text").css('background', item.color);
+                },
+                columns: [
+                    { text: "ToDo", iconClassName: getIconClassName(), dataField: "new", maxItems: 10 },
+                    { text: "In Progress", iconClassName: getIconClassName(), dataField: "work", maxItems: 10 },
+                    { text: "Done", iconClassName: getIconClassName(), dataField: "done", maxItems: 10 }
+                ],
+                // render column headers.
+                columnRenderer: function (element, collapsedElement, column) {
+                    var columnItems = $("#kanban").jqxKanban('getColumnItems', column.dataField).length;
+                    // update header's status.
+                    element.find(".jqx-kanban-column-header-status").html(" (" + columnItems + "/" + column.maxItems + ")");
+                    // update collapsed header's status.
+                    collapsedElement.find(".jqx-kanban-column-header-status").html(" (" + columnItems + "/" + column.maxItems + ")");
+                }
+            });
+
+            // handle item clicks.
+            $('#kanban').on("itemAttrClicked", function (event) {
+                var args = event.args;
+                if (args.attribute == "template") {
+                    $('#kanban').jqxKanban('removeItem', args.item.id);
+                }
+            });
+            // handle column clicks.
+            var itemIndex = 0;
+            $('#kanban').on('columnAttrClicked', function (event) {
+                debugger;
+                var args = event.args;
+                if (args.attribute == "button") {
+                    args.cancelToggle = true;
+                    if (!args.column.collapsed) {
+                        var colors = ['#f19b60', '#5dc3f0', '#6bbd49', '#dddddd']
+                        $('#kanban').jqxKanban('addItem', { status: args.column.dataField, text: "<input placeholder='(Add New Task)' style='width: 96%; margin-top:2px; border-radius: 3px; border-color: #ddd; line-height:20px; height: 20px;' class='jqx-input' id='newItem" + itemIndex + "' value=''/>", tags: "new task", color: colors[Math.floor(Math.random() * 4)], resourceId: Math.floor(Math.random() * 4) });
+                        var input = $("#newItem" + itemIndex);
+                        input.mousedown(function (event) {
+                            event.stopPropagation();
+                        });
+                        input.mouseup(function (event) {
+                            event.stopPropagation();
+                        });
+                        input.keydown(function (event) {
+                            if (event.keyCode == 13) {
+                                $("<span>" + $(event.target).val() + "</span>").insertBefore($(event.target));
+                                Save(0, $(event.target).val(), "add", "new");
+                                debugger;
+                                $(event.target).remove();
+                                //Save($(event.target).val(), false);
+                            }
+                        });
+                        input.focus();
+                        itemIndex++;
+                    }
+                }
+            });
+
+
+            $('#kanban').on('itemMoved', function (event) {
+                debugger;
+                var args = event.args;
+                var itemId = args.itemId;
+                var oldParentId = args.oldParentId;
+                var newParentId = args.newParentId;
+                var itemData = args.itemData;
+                var oldColumn = args.oldColumn;
+                var newColumn = args.newColumn;
+                debugger;
+                Save(itemId, itemData.text, "update", newColumn.dataField);
+            });
+        });
+
+        function Save(itemId, itemData, action, state) {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: 'Home/Save',
+                contentType: "application/json",
+                data: JSON.stringify({ id: itemId, data: itemData, state: state, isDelete: action }),
+                dataType: "json",
+                success: function () { alert('Success'); },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+    </script>
+}
+<body class='default'>
+    <div id="kanban"></div>
+</body>
