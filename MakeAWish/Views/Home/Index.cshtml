@@ -112,6 +112,7 @@
 
             // handle item clicks.
             $('#kanban').on("itemAttrClicked", function (event) {
+                debugger;
                 var args = event.args;
                 if (args.attribute == "template") {
                     $('#kanban').jqxKanban('removeItem', args.item.id);

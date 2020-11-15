@@ -11,36 +11,36 @@ namespace MakeAWish.Repository
 {
     public class ToDoRepository : IToDoRepository
     {
-        public async Task DeleteTask(int id)
+        public void DeleteTask(int id)
         {
             using (var context = new ToDoContext())
             {
-                var result = await context.ToDoList.SingleOrDefaultAsync(t => t.id == id);
+                var result = context.ToDoList.SingleOrDefault(t => t.id == id);
                 //Delete task if exists
                 if (result != null)
                 {
                     context.ToDoList.Remove(result);
-                    await context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
             }
         }
 
-        public async Task UpdateTask(int id, string data, string state, string color)
+        public void UpdateTask(int id, string data, string state, string color)
         {
             using (var context = new ToDoContext())
             {
                 //Check if exists
-                var result = await context.ToDoList.SingleOrDefaultAsync(t => t.id == id);
+                var result = context.ToDoList.SingleOrDefault(t => t.id == id);
                 if (result != null)
                 {
                     result.state = state;
                     result.hex = color;
-                    await context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
             }
         }
 
-        public async Task AddTask(int userId, string data, string state, string color)
+        public void AddTask(int userId, string data, string state, string color)
         {
             using (var context = new ToDoContext())
             {
@@ -50,7 +50,15 @@ namespace MakeAWish.Repository
                 dataToSave.state = state;
                 dataToSave.hex = color;
                 context.ToDoList.Add(dataToSave);
-                await context.SaveChangesAsync();
+                context.SaveChanges();
+            }
+        }
+
+        public async Task<List<ToDoModel>> GetList(int userId)
+        {
+            using (var context = new ToDoContext())
+            {
+                return await context.ToDoList.Where(u => u.userId == userId).ToListAsync();
             }
         }
     }

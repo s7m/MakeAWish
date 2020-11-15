@@ -23,44 +23,42 @@ namespace MakeAWish.Controllers
             _toDoRepository = toDoRepository;
         }
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             //Redirect if the user not logged in
             if (Session["userId"] == null)
             {
                 return RedirectToAction("Welcome", "Auth");
             }
+            _toDoRepository = new ToDoRepository();
 
             int userId = Convert.ToInt32(Session["userId"]);
 
             ToDoViewModel viewModel = new ToDoViewModel();
-            using (var context = new ToDoContext())
-            {
-                viewModel.toDoModels = new List<ToDoModel>();
-                viewModel.toDoModels = context.ToDoList.Where(u => u.userId == userId).ToList();
-            }
+            viewModel.toDoModels = new List<ToDoModel>();
+            viewModel.toDoModels = await _toDoRepository.GetList(userId);
 
             return View("Index", viewModel);
         }
 
         [HttpPost]
-        public async Task AddTask(string id, string data, string state, string color)
+        public void AddTask(string id, string data, string state, string color)
         {
             int userId = Convert.ToInt32(Session["userId"]);
             _toDoRepository = new ToDoRepository();
-            await _toDoRepository.AddTask(userId, data, state, color);
+             _toDoRepository.AddTask(userId, data, state, color);
         }
 
-        public async Task UpdateTask(int id, string data, string state, string color)
+        public void UpdateTask(int id, string data, string state, string color)
         {
             _toDoRepository = new ToDoRepository();
-            await _toDoRepository.UpdateTask(id, data, state, color);
+             _toDoRepository.UpdateTask(id, data, state, color);
         }
 
-        public async Task DeleteTask(int id)
+        public void DeleteTask(int id)
         {
             _toDoRepository = new ToDoRepository();
-            await _toDoRepository.DeleteTask(id);
+             _toDoRepository.DeleteTask(id);
         }
     }
 }
