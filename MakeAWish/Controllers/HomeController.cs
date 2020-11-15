@@ -13,14 +13,19 @@ namespace MakeAWish.Controllers
     {
         public ActionResult Index()
         {
+            if (Session["userId"] == null)
+            {
+                return RedirectToAction("Auth", "Welcome");
+            }
+            int userId = Convert.ToInt32(Session["userId"]);
             ToDoViewModel viewModel = new ToDoViewModel();
             using (var context = new ToDoContext())
             {
                 viewModel.toDoModels = new List<ToDoModel>();
-                viewModel.toDoModels = context.ToDoList.ToList();
+                viewModel.toDoModels = context.ToDoList.Where(u => u.userId == userId).ToList();
             }
 
-            return View(viewModel);
+            return View("Index", viewModel);
         }
 
         public ActionResult About()
@@ -44,6 +49,7 @@ namespace MakeAWish.Controllers
             {
                 ToDoModel dataToSave = new ToDoModel();
                 dataToSave.label = data;
+                dataToSave.userId = Convert.ToInt32(Session["userId"]);
                 dataToSave.state = state;
                 dataToSave.hex = color;
                 context.ToDoList.Add(dataToSave);

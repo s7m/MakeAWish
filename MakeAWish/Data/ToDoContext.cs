@@ -10,6 +10,7 @@ namespace MakeAWish.Data
     public class ToDoContext : DbContext
     {
         public DbSet<ToDoModel> ToDoList { get; set; }
+        public DbSet<AppUser> AppUser { get; set; }
 
         public ToDoContext() : base(GetConnection(), false)
         {

@@ -1,0 +1,66 @@
+﻿@model MakeAWish.Models.AppUser
+<!doctype html>
+<html lang="en">
+<head>
+    <style>
+        .ml {
+            margin-left: 110px !important;
+        }
+
+        .mb {
+            margin-bottom: 10px !important;
+        }
+    </style>
+
+    <!--<script>-->
+
+        @*function SignIn() {
+            debugger;
+            var userName = $("#inputUserName").val();
+            var password = $("#inputPassword").val();
+
+            $.ajax({
+                type: "POST",
+                url: '/Auth/SignIn',
+                contentType: "application/json",
+                data: JSON.stringify({ userName: userName, password: password }),
+                dataType: "json",
+                async: false,
+                success: function (res) {
+                    console.log(res);
+                    //if (res === true) {
+                    window.location.href ="https://localhost:44302/home/index"
+                   // }
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        function GoToHome() {
+            debugger;
+            var url = '@Url.Action("Index", "Home")';
+            window.location.href = url;
+        }*@
+    <!--</script>-->
+</head>
+<body class="">
+    @using (Html.BeginForm("SignIn", "Auth", FormMethod.Post))
+    {
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        <label for="inputUserName" class="sr-only">User name</label>
+        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control mb", placeholder = "User name" })
+        @*<input type="text" id="inputUserName" class="form-control mb" placeholder="User name" required autofocus>*@
+        <label for="inputPassword" class="sr-only">Password</label>
+        @Html.PasswordFor(m => m.Password, new {@class="form-control" ,placeholder="Password"})
+        @*<input type="password" id="inputPassword"  required>*@
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" value="remember-me"> Remember me
+            </label>
+        </div>
+        <input class="btn btn-lg btn-primary ml" type="submit" value="Sign in"/>
+    }
+</body>
+</html>
