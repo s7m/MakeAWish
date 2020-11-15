@@ -11,7 +11,6 @@ namespace MakeAWish.Controllers
 {
     public class AuthController : Controller
     {
-        // GET: Users
         public ActionResult Welcome()
         {
             if (Session["userId"] == null)
@@ -20,6 +19,7 @@ namespace MakeAWish.Controllers
             }
             else
             {
+                //Return if logged in
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -36,6 +36,7 @@ namespace MakeAWish.Controllers
                     Session["userId"] = response.Id;
                     return RedirectToAction("Index", "Home");
                 }
+                //Rturn on invalid loggin attempt
                 return RedirectToAction("Welcome");
             }
             return RedirectToAction("Welcome");
@@ -43,6 +44,7 @@ namespace MakeAWish.Controllers
 
         public ActionResult SignOut()
         {
+            //Clear session and redirect
             Session.Clear();
             return RedirectToAction("Welcome");
         }

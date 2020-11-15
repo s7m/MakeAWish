@@ -16,11 +16,11 @@ namespace MakeAWish.Repository
             using (var context = new ToDoContext())
             {
                 var result = await context.ToDoList.SingleOrDefaultAsync(t => t.id == id);
-
+                //Delete task if exists
                 if (result != null)
                 {
                     context.ToDoList.Remove(result);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                 }
             }
         }
@@ -29,13 +29,13 @@ namespace MakeAWish.Repository
         {
             using (var context = new ToDoContext())
             {
+                //Check if exists
                 var result = await context.ToDoList.SingleOrDefaultAsync(t => t.id == id);
                 if (result != null)
                 {
                     result.state = state;
                     result.hex = color;
-                    //context.ToDoList.(dataToSave);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                 }
             }
         }
@@ -49,7 +49,7 @@ namespace MakeAWish.Repository
                 dataToSave.userId = userId;
                 dataToSave.state = state;
                 dataToSave.hex = color;
-                 context.ToDoList.Add(dataToSave);
+                context.ToDoList.Add(dataToSave);
                 await context.SaveChangesAsync();
             }
         }

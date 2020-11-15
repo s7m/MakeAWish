@@ -25,6 +25,7 @@ namespace MakeAWish.Controllers
 
         public ActionResult Index()
         {
+            //Redirect if the user not logged in
             if (Session["userId"] == null)
             {
                 return RedirectToAction("Welcome", "Auth");
