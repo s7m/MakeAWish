@@ -130,6 +130,7 @@
                 var args = event.args;
                 if (args.attribute == "template") {
                     $('#kanban').jqxKanban('removeItem', args.item.id);
+                    DeleteTask(args.item.id);
                 }
             });
             // handle column clicks.
@@ -151,11 +152,11 @@
                         });
                         input.keydown(function (event) {
                             if (event.keyCode == 13) {
+                                debugger;
                                 $("<span>" + $(event.target).val() + "</span>").insertBefore($(event.target));
-                                Save(0, $(event.target).val(), "add", "new");
+                                AddTask(0, $(event.target).val(), "add", "new");
                                 debugger;
                                 $(event.target).remove();
-                                //Save($(event.target).val(), false);
                             }
                         });
                         input.focus();
@@ -175,17 +176,47 @@
                 var oldColumn = args.oldColumn;
                 var newColumn = args.newColumn;
                 debugger;
-                Save(itemId, itemData.text, "update", newColumn.dataField);
+                UpdateTask(itemId, itemData.text, "update", newColumn.dataField);
             });
         });
 
-        function Save(itemId, itemData, action, state) {
+        function AddTask(itemId, itemData, action, state) {
             debugger;
             $.ajax({
                 type: "POST",
-                url: 'Save',
+                url: 'AddTask',
                 contentType: "application/json",
-                data: JSON.stringify({ id: itemId, data: itemData, state: state, isDelete: action }),
+                data: JSON.stringify({ id: itemId, data: itemData, state: state}),
+                dataType: "json",
+                success: function () { alert('Success'); },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        function UpdateTask(itemId, itemData, action, state) {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: '/Home/UpdateTask',
+                contentType: "application/json",
+                data: JSON.stringify({ id: itemId, data: itemData, state: state }),
+                dataType: "json",
+                success: function () { alert('Success'); },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        function DeleteTask(itemId) {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: '/Home/DeleteTask',
+                contentType: "application/json",
+                data: JSON.stringify({ id: itemId}),
                 dataType: "json",
                 success: function () { alert('Success'); },
                 error: function (xhr) {

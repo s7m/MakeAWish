@@ -18,23 +18,6 @@ namespace MakeAWish.Controllers
             {
                 viewModel.toDoModels = new List<ToDoModel>();
                 viewModel.toDoModels = context.ToDoList.ToList();
-                
-                //viewModel.toDoModels.Add(new ToDoModel
-
-                //{ id = 1, state = "new", label = "Make a new Dashboard", tags = "dashboard", hex = "#36c7d0", resourceId = 3 }
-                //);
-
-                //viewModel.toDoModels.Add(new ToDoModel
-                //{ id = 2, state = "new", label = "Test", tags = "dashboard", hex = "#36c7d0", resourceId = 3 }
-                //);
-
-                //viewModel.toDoModels.Add(new ToDoModel
-                //{ id = 1156, state = "work", label = "Test", tags = "dashboard", hex = "#36c7d0", resourceId = 3 }
-                //);
-
-                //viewModel.toDoModels.Add(new ToDoModel
-                //{ id = 123, state = "done", label = "Test", tags = "dashboard", hex = "#36c7d0", resourceId = 3 }
-                //);
             }
 
             return View(viewModel);
@@ -55,19 +38,64 @@ namespace MakeAWish.Controllers
         }
 
         [HttpPost]
-        public void Save(string id, string data, string state, string isDelete)
+        public void AddTask(string id, string data, string state)
         {
             using (var context = new ToDoContext())
             {
                 ToDoModel dataToSave = new ToDoModel();
-                //dataToSave.id = 11;
                 dataToSave.label = data;
                 dataToSave.state = state;
-
+                dataToSave.hex = "#6bbd49";
                 context.ToDoList.Add(dataToSave);
                 context.SaveChanges();
             }
         }
 
+
+        public void UpdateTask(int id, string data, string state)
+        {
+            using (var context = new ToDoContext())
+            {
+                var result = context.ToDoList.SingleOrDefault(t => t.id == id);
+                if (result != null)
+                {
+                    result.state = state;
+                    result.hex = GetColor(state);
+                    //context.ToDoList.(dataToSave);
+                    context.SaveChanges();
+                }
+            }
+        }
+
+        public void DeleteTask(int id)
+        {
+            using (var context = new ToDoContext())
+            {
+                var result = context.ToDoList.SingleOrDefault(t => t.id == id);
+                if (result != null)
+                {
+                    context.ToDoList.Remove(result);
+                    context.SaveChanges();
+                }
+            }
+        }
+
+        private string GetColor(string state)
+        {
+            switch (state)
+            {
+                case "new":
+                    return "#6bbd49";
+
+                case "work":
+                    return "#f19b60";
+
+                case "done":
+                    return "#5dc3f0";
+                default:
+                    return "#dddddd";
+            }
+
+        }
     }
 }
