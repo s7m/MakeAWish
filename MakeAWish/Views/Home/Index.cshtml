@@ -142,7 +142,8 @@
                     args.cancelToggle = true;
                     if (!args.column.collapsed) {
                         var colors = ['#f19b60', '#5dc3f0', '#6bbd49', '#dddddd']
-                        $('#kanban').jqxKanban('addItem', { status: args.column.dataField, text: "<input placeholder='(Add New Task)' style='width: 96%; margin-top:2px; border-radius: 3px; border-color: #ddd; line-height:20px; height: 20px;' class='jqx-input' id='newItem" + itemIndex + "' value=''/>", tags: "new task", color: colors[Math.floor(Math.random() * 4)], resourceId: Math.floor(Math.random() * 4) });
+                        var itemColor = colors[Math.floor(Math.random() * 4)];
+                        $('#kanban').jqxKanban('addItem', { status: args.column.dataField, text: "<input placeholder='(Add New Task)' style='width: 96%; margin-top:2px; border-radius: 3px; border-color: #ddd; line-height:20px; height: 20px;' class='jqx-input' id='newItem" + itemIndex + "' value=''/>", tags: "new task", color: itemColor, resourceId: Math.floor(Math.random() * 4) });
                         var input = $("#newItem" + itemIndex);
                         input.mousedown(function (event) {
                             event.stopPropagation();
@@ -154,7 +155,7 @@
                             if (event.keyCode == 13) {
                                 debugger;
                                 $("<span>" + $(event.target).val() + "</span>").insertBefore($(event.target));
-                                AddTask(0, $(event.target).val(), "add", "new");
+                                AddTask(0, $(event.target).val(), "add", "new", itemColor);
                                 debugger;
                                 $(event.target).remove();
                             }
@@ -175,18 +176,19 @@
                 var itemData = args.itemData;
                 var oldColumn = args.oldColumn;
                 var newColumn = args.newColumn;
+                var itemColor = getItemColor(itemId);
                 debugger;
-                UpdateTask(itemId, itemData.text, "update", newColumn.dataField);
+                UpdateTask(itemId, itemData.text, "update", newColumn.dataField, itemColor);
             });
         });
 
-        function AddTask(itemId, itemData, action, state) {
+        function AddTask(itemId, itemData, action, state, color) {
             debugger;
             $.ajax({
                 type: "POST",
-                url: 'AddTask',
+                url: '/Home/AddTask',
                 contentType: "application/json",
-                data: JSON.stringify({ id: itemId, data: itemData, state: state}),
+                data: JSON.stringify({ id: itemId, data: itemData, state: state, color: color }),
                 dataType: "json",
                 success: function () { alert('Success'); },
                 error: function (xhr) {
@@ -195,13 +197,13 @@
             });
         }
 
-        function UpdateTask(itemId, itemData, action, state) {
+        function UpdateTask(itemId, itemData, action, state, color) {
             debugger;
             $.ajax({
                 type: "POST",
                 url: '/Home/UpdateTask',
                 contentType: "application/json",
-                data: JSON.stringify({ id: itemId, data: itemData, state: state }),
+                data: JSON.stringify({ id: itemId, data: itemData, state: state, color: color }),
                 dataType: "json",
                 success: function () { alert('Success'); },
                 error: function (xhr) {
@@ -223,6 +225,12 @@
                     console.log(xhr.responseText);
                 }
             });
+        }
+
+        function getItemColor(itemId) {
+            var itemArray = $('#kanban').jqxKanban('getItems');
+            var item = itemArray.find(x => x.id === itemId);
+            return item.color;
         }
     </script>
 }

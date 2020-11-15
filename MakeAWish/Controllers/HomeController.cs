@@ -38,21 +38,21 @@ namespace MakeAWish.Controllers
         }
 
         [HttpPost]
-        public void AddTask(string id, string data, string state)
+        public void AddTask(string id, string data, string state, string color)
         {
             using (var context = new ToDoContext())
             {
                 ToDoModel dataToSave = new ToDoModel();
                 dataToSave.label = data;
                 dataToSave.state = state;
-                dataToSave.hex = "#6bbd49";
+                dataToSave.hex = color;
                 context.ToDoList.Add(dataToSave);
                 context.SaveChanges();
             }
         }
 
 
-        public void UpdateTask(int id, string data, string state)
+        public void UpdateTask(int id, string data, string state, string color)
         {
             using (var context = new ToDoContext())
             {
@@ -60,7 +60,7 @@ namespace MakeAWish.Controllers
                 if (result != null)
                 {
                     result.state = state;
-                    result.hex = GetColor(state);
+                    result.hex = color;
                     //context.ToDoList.(dataToSave);
                     context.SaveChanges();
                 }
@@ -78,24 +78,6 @@ namespace MakeAWish.Controllers
                     context.SaveChanges();
                 }
             }
-        }
-
-        private string GetColor(string state)
-        {
-            switch (state)
-            {
-                case "new":
-                    return "#6bbd49";
-
-                case "work":
-                    return "#f19b60";
-
-                case "done":
-                    return "#5dc3f0";
-                default:
-                    return "#dddddd";
-            }
-
         }
     }
 }
