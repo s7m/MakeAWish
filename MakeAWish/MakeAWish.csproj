@@ -149,6 +149,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\AuthRepository.cs" />
     <Compile Include="Repository\IAuthRepository.cs" />
+    <Compile Include="Repository\IToDoRepository.cs" />
+    <Compile Include="Repository\ToDoRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />

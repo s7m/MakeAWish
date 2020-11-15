@@ -47,7 +47,6 @@
         }
     </style>
     <script type="text/javascript">
-        debugger;
         var sourceData = @Html.Raw(Json.Encode(Model.toDoModels));
         $(document).ready(function () {
             var fields = [
@@ -136,7 +135,6 @@
             // handle column clicks.
             var itemIndex = 0;
             $('#kanban').on('columnAttrClicked', function (event) {
-                debugger;
                 var args = event.args;
                 if (args.attribute == "button") {
                     args.cancelToggle = true;
@@ -153,10 +151,8 @@
                         });
                         input.keydown(function (event) {
                             if (event.keyCode == 13) {
-                                debugger;
                                 $("<span>" + $(event.target).val() + "</span>").insertBefore($(event.target));
                                 AddTask(0, $(event.target).val(), "add", "new", itemColor);
-                                debugger;
                                 $(event.target).remove();
                             }
                         });
@@ -168,7 +164,6 @@
 
 
             $('#kanban').on('itemMoved', function (event) {
-                debugger;
                 var args = event.args;
                 var itemId = args.itemId;
                 var oldParentId = args.oldParentId;
@@ -177,13 +172,11 @@
                 var oldColumn = args.oldColumn;
                 var newColumn = args.newColumn;
                 var itemColor = getItemColor(itemId);
-                debugger;
                 UpdateTask(itemId, itemData.text, "update", newColumn.dataField, itemColor);
             });
         });
 
         function AddTask(itemId, itemData, action, state, color) {
-            debugger;
             $.ajax({
                 type: "POST",
                 url: '/Home/AddTask',
@@ -192,13 +185,12 @@
                 dataType: "json",
                 success: function () { alert('Success'); },
                 error: function (xhr) {
-                    console.log(xhr.responseText);
+                   //console.log(xhr.responseText);
                 }
             });
         }
 
         function UpdateTask(itemId, itemData, action, state, color) {
-            debugger;
             $.ajax({
                 type: "POST",
                 url: '/Home/UpdateTask',
@@ -207,13 +199,12 @@
                 dataType: "json",
                 success: function () { alert('Success'); },
                 error: function (xhr) {
-                    console.log(xhr.responseText);
+                    //console.log(xhr.responseText);
                 }
             });
         }
 
         function DeleteTask(itemId) {
-            debugger;
             $.ajax({
                 type: "POST",
                 url: '/Home/DeleteTask',
@@ -222,7 +213,7 @@
                 dataType: "json",
                 success: function () { alert('Success'); },
                 error: function (xhr) {
-                    console.log(xhr.responseText);
+                    //console.log(xhr.responseText);
                 }
             });
         }

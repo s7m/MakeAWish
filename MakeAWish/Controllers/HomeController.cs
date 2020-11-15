@@ -1,23 +1,37 @@
 ﻿using MakeAWish.Data;
 using MakeAWish.Models;
+using MakeAWish.Repository;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.SqlServer;
 using System.Linq;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace MakeAWish.Controllers
 {
     public class HomeController : Controller
     {
+        private IToDoRepository _toDoRepository;
+
+        public HomeController()
+        {
+
+        }
+
+        public HomeController(IToDoRepository toDoRepository)
+        {
+            _toDoRepository = toDoRepository;
+        }
+
         public ActionResult Index()
         {
             if (Session["userId"] == null)
             {
-                return RedirectToAction("Auth", "Welcome");
+                return RedirectToAction("Welcome", "Auth");
             }
+
             int userId = Convert.ToInt32(Session["userId"]);
+
             ToDoViewModel viewModel = new ToDoViewModel();
             using (var context = new ToDoContext())
             {
@@ -43,47 +57,23 @@ namespace MakeAWish.Controllers
         }
 
         [HttpPost]
-        public void AddTask(string id, string data, string state, string color)
+        public async Task AddTask(string id, string data, string state, string color)
         {
-            using (var context = new ToDoContext())
-            {
-                ToDoModel dataToSave = new ToDoModel();
-                dataToSave.label = data;
-                dataToSave.userId = Convert.ToInt32(Session["userId"]);
-                dataToSave.state = state;
-                dataToSave.hex = color;
-                context.ToDoList.Add(dataToSave);
-                context.SaveChanges();
-            }
+            int userId = Convert.ToInt32(Session["userId"]);
+            _toDoRepository = new ToDoRepository();
+            await _toDoRepository.AddTask(userId, data, state, color);
         }
 
-
-        public void UpdateTask(int id, string data, string state, string color)
+        public async Task UpdateTask(int id, string data, string state, string color)
         {
-            using (var context = new ToDoContext())
-            {
-                var result = context.ToDoList.SingleOrDefault(t => t.id == id);
-                if (result != null)
-                {
-                    result.state = state;
-                    result.hex = color;
-                    //context.ToDoList.(dataToSave);
-                    context.SaveChanges();
-                }
-            }
+            _toDoRepository = new ToDoRepository();
+            await _toDoRepository.UpdateTask(id, data, state, color);
         }
 
-        public void DeleteTask(int id)
+        public async Task DeleteTask(int id)
         {
-            using (var context = new ToDoContext())
-            {
-                var result = context.ToDoList.SingleOrDefault(t => t.id == id);
-                if (result != null)
-                {
-                    context.ToDoList.Remove(result);
-                    context.SaveChanges();
-                }
-            }
+            _toDoRepository = new ToDoRepository();
+            await _toDoRepository.DeleteTask(id);
         }
     }
 }

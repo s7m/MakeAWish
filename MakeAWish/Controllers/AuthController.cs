@@ -22,21 +22,22 @@ namespace MakeAWish.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            // return View();
-
         }
 
 
         public ActionResult SignIn(AppUser user)
         {
-            AuthRepository authRepository = new AuthRepository();
-            AppUser response = authRepository.SignIn(user.UserName, user.Password);
-            if (user != null)
+            if (ModelState.IsValid)
             {
-                Session["userId"] = response.Id;
-                return RedirectToAction("Index", "Home");
+                AuthRepository authRepository = new AuthRepository();
+                AppUser response = authRepository.SignIn(user.UserName, user.Password);
+                if (response != null)
+                {
+                    Session["userId"] = response.Id;
+                    return RedirectToAction("Index", "Home");
+                }
+                return RedirectToAction("Welcome");
             }
-
             return RedirectToAction("Welcome");
         }
     }
