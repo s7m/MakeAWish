@@ -7,7 +7,8 @@ namespace MakeAWish.Models
 {
     public class ToDoModel
     {
-        public string id { get; set; }
+        public int id { get; set; }
+        public int userId { get; set; }
         public string state { get; set; }
         public string label { get; set; }
         public string tags { get; set; }

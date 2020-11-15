@@ -13,7 +13,7 @@ namespace MakeAWish.DataConfig
         public ToDoConfig()
         {
             ToTable("ToDoList");
-            Property(p => p.id).IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(p => p.id).IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(p => p.label).IsRequired();
             Property(p => p.state).IsRequired();
             Property(p => p.resourceId).IsRequired();

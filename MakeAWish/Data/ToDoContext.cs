@@ -1,4 +1,5 @@
 ﻿using MakeAWish.DataConfig;
+using MakeAWish.Models;
 using System.Configuration;
 using System.Data.Common;
 using System.Data.Entity;
@@ -8,11 +9,11 @@ namespace MakeAWish.Data
 {
     public class ToDoContext : DbContext
     {
-        public DbSet<ToDoContext> ToDoList { get; set; }
+        public DbSet<ToDoModel> ToDoList { get; set; }
 
         public ToDoContext() : base(GetConnection(), false)
         {
-
+            Database.SetInitializer<ToDoContext>(null);
         }
 
         public static DbConnection GetConnection()
