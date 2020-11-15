@@ -10,13 +10,6 @@ namespace MakeAWish.Repository
 {
     public class AuthRepository : IAuthRepository
     {
-        private readonly ToDoContext _dbContext;
-
-        //public AuthRepository(ToDoContext dbContext)
-        //{
-        //    _dbContext = dbContext;
-        //}
-
         public AppUser SignIn(string userName, string password)
         {
             using (var context = new ToDoContext())

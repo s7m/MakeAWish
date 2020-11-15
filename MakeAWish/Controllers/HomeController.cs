@@ -42,20 +42,6 @@ namespace MakeAWish.Controllers
             return View("Index", viewModel);
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-
         [HttpPost]
         public async Task AddTask(string id, string data, string state, string color)
         {

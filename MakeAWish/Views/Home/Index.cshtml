@@ -78,19 +78,6 @@
                 return resourcesDataAdapter;
             }
             var getIconClassName = function () {
-                //switch (theme) {
-                //    case "darkblue":
-                //    case "black":
-                //    case "shinyblack":
-                //    case "ui-le-frog":
-                //    case "metrodark":
-                //    case "orange":
-                //    case "darkblue":
-                //    case "highcontrast":
-                //    case "ui-sunny":
-                //    case "ui-darkness":
-                //        return "jqx-icon-plus-alt-white ";
-                //}
                 return "jqx-icon-plus-alt";
             }
             $('#kanban').jqxKanban({
@@ -111,8 +98,8 @@
                 },
                 columns: [
                     { text: "ToDo", iconClassName: getIconClassName(), dataField: "new", maxItems: 10 },
-                    { text: "In Progress", iconClassName: getIconClassName(), dataField: "work", maxItems: 10 },
-                    { text: "Done", iconClassName: getIconClassName(), dataField: "done", maxItems: 10 }
+                    { text: "In Progress", dataField: "work", maxItems: 10 },
+                    { text: "Done", dataField: "done", maxItems: 10 }
                 ],
                 // render column headers.
                 columnRenderer: function (element, collapsedElement, column) {

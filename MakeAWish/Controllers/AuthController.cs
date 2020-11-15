@@ -40,5 +40,11 @@ namespace MakeAWish.Controllers
             }
             return RedirectToAction("Welcome");
         }
+
+        public ActionResult SignOut()
+        {
+            Session.Clear();
+            return RedirectToAction("Welcome");
+        }
     }
 }
