@@ -1,9 +1,7 @@
-﻿using MakeAWish.Data;
-using MakeAWish.Models;
+﻿using MakeAWish.Models;
 using MakeAWish.Repository;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -15,12 +13,7 @@ namespace MakeAWish.Controllers
 
         public HomeController()
         {
-
-        }
-
-        public HomeController(IToDoRepository toDoRepository)
-        {
-            _toDoRepository = toDoRepository;
+            _toDoRepository = new ToDoRepository();
         }
 
         public async Task<ActionResult> Index()
@@ -30,7 +23,6 @@ namespace MakeAWish.Controllers
             {
                 return RedirectToAction("Welcome", "Auth");
             }
-            _toDoRepository = new ToDoRepository();
 
             int userId = Convert.ToInt32(Session["userId"]);
 
@@ -42,23 +34,21 @@ namespace MakeAWish.Controllers
         }
 
         [HttpPost]
-        public void AddTask(string id, string data, string state, string color)
+        public async Task AddTask(string id, string data, string state, string color)
         {
             int userId = Convert.ToInt32(Session["userId"]);
-            _toDoRepository = new ToDoRepository();
-             _toDoRepository.AddTask(userId, data, state, color);
+            await _toDoRepository.AddTask(userId, data, state, color);
         }
 
-        public void UpdateTask(int id, string data, string state, string color)
+        public async Task UpdateTask(int id, string data, string state, string color)
         {
-            _toDoRepository = new ToDoRepository();
-             _toDoRepository.UpdateTask(id, data, state, color);
+            //returns the number of saved items
+            int saveStatus = await _toDoRepository.UpdateTask(id, data, state, color);
         }
 
-        public void DeleteTask(int id)
+        public async Task DeleteTask(int id)
         {
-            _toDoRepository = new ToDoRepository();
-             _toDoRepository.DeleteTask(id);
+            await _toDoRepository.DeleteTask(id);
         }
     }
 }

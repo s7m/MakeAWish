@@ -1,20 +1,35 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
+using MakeAWish.Controllers;
+using MakeAWish.Repository;
+using NUnit.Framework;
 
 namespace MakeAWishUnitTest
 {
-    [TestClass]
+    [TestFixture]
     class ToDoTest
     {
-        [TestMethod]
-        void AddTask()
+        ToDoRepository _repo;
+        [SetUp]
+        public void Init()
         {
-            int userId = 1;
-            string state = "";
-            string label = "";
-            string tags = "";
-            string hex = "";
-            string resourceId = "";
+            _repo = new ToDoRepository();
         }
+
+        [Test]
+        public void UpdateTask_Save_ReturnsOne()
+        {
+            var result =  _repo.UpdateTask(42, "Unit Test", "work", "green");
+            result.Wait();
+            Assert.AreEqual(result, 1);
+        }
+
+        [Test]
+        void TestIndex_PassNullUser_Redirect()
+        {
+
+        }
+
+
     }
 }

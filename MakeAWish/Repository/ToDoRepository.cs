@@ -1,17 +1,15 @@
 ﻿using MakeAWish.Data;
 using MakeAWish.Models;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MakeAWish.Repository
 {
     public class ToDoRepository : IToDoRepository
     {
-        public void DeleteTask(int id)
+        public async Task DeleteTask(int id)
         {
             using (var context = new ToDoContext())
             {
@@ -20,27 +18,30 @@ namespace MakeAWish.Repository
                 if (result != null)
                 {
                     context.ToDoList.Remove(result);
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                 }
             }
         }
 
-        public void UpdateTask(int id, string data, string state, string color)
+        public async Task<int> UpdateTask(int id, string data, string state, string color)
         {
+            int saveCount = 0;
             using (var context = new ToDoContext())
             {
                 //Check if exists
-                var result = context.ToDoList.SingleOrDefault(t => t.id == id);
-                if (result != null)
+                var existingTask = context.ToDoList.SingleOrDefault(t => t.id == id);
+                if (existingTask != null)
                 {
-                    result.state = state;
-                    result.hex = color;
-                    context.SaveChanges();
+                    existingTask.state = state;
+                    existingTask.hex = color;
+                    saveCount = await context.SaveChangesAsync();
                 }
             }
+
+            return saveCount;
         }
 
-        public void AddTask(int userId, string data, string state, string color)
+        public async Task AddTask(int userId, string data, string state, string color)
         {
             using (var context = new ToDoContext())
             {
@@ -50,7 +51,7 @@ namespace MakeAWish.Repository
                 dataToSave.state = state;
                 dataToSave.hex = color;
                 context.ToDoList.Add(dataToSave);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
 

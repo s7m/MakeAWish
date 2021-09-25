@@ -23,4 +23,19 @@ textarea {
     max-width: 280px;
 }
 
+#kanban-column-header-0 {
+    background: #7FFF00;
+}
+#kanban-column-header-1 {
+    background: #00CED1;
+}
+
+#kanban-column-header-2 {
+    background: #DC143C;
+}
+
+.jqx-icon-plus-alt{
+    color:red !important;
+}
+
 
