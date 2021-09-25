@@ -1,4 +1,5 @@
 ﻿using MakeAWish.Data;
+using MakeAWish.Dtos;
 using MakeAWish.Models;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -23,17 +24,17 @@ namespace MakeAWish.Repository
             }
         }
 
-        public async Task<int> UpdateTask(int id, string data, string state, string color)
+        public async Task<int> UpdateTask(TaskDto task)
         {
             int saveCount = 0;
             using (var context = new ToDoContext())
             {
                 //Check if exists
-                var existingTask = context.ToDoList.SingleOrDefault(t => t.id == id);
+                var existingTask = context.ToDoList.SingleOrDefault(t => t.id == task.id);
                 if (existingTask != null)
                 {
-                    existingTask.state = state;
-                    existingTask.hex = color;
+                    existingTask.state = task.state;
+                    existingTask.hex = task.color;
                     saveCount = await context.SaveChangesAsync();
                 }
             }
@@ -41,15 +42,15 @@ namespace MakeAWish.Repository
             return saveCount;
         }
 
-        public async Task AddTask(int userId, string data, string state, string color)
+        public async Task AddTask(int userId, TaskDto task)
         {
             using (var context = new ToDoContext())
             {
                 ToDoModel dataToSave = new ToDoModel();
-                dataToSave.label = data;
                 dataToSave.userId = userId;
-                dataToSave.state = state;
-                dataToSave.hex = color;
+                dataToSave.label = task.data;
+                dataToSave.state = task.state;
+                dataToSave.hex = task.color;
                 context.ToDoList.Add(dataToSave);
                 await context.SaveChangesAsync();
             }

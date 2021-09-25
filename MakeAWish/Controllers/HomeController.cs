@@ -1,4 +1,5 @@
-﻿using MakeAWish.Models;
+﻿using MakeAWish.Dtos;
+using MakeAWish.Models;
 using MakeAWish.Repository;
 using System;
 using System.Collections.Generic;
@@ -34,16 +35,16 @@ namespace MakeAWish.Controllers
         }
 
         [HttpPost]
-        public async Task AddTask(string id, string data, string state, string color)
+        public async Task AddTask(TaskDto task)
         {
             int userId = Convert.ToInt32(Session["userId"]);
-            await _toDoRepository.AddTask(userId, data, state, color);
+            await _toDoRepository.AddTask(userId, task);
         }
 
-        public async Task UpdateTask(int id, string data, string state, string color)
+        public async Task UpdateTask(TaskDto task)
         {
             //returns the number of saved items
-            int saveStatus = await _toDoRepository.UpdateTask(id, data, state, color);
+            int saveStatus = await _toDoRepository.UpdateTask(task);
         }
 
         public async Task DeleteTask(int id)
